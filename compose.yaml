@@ -1,0 +1,16 @@
+name: jm
+
+services:
+  claude:
+    build:
+      context: ./
+      dockerfile: Containerfile
+    userns_mode: "keep-id:uid=1000,gid=1000"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    volumes:
+      - ~/.config/jm/claude:/home/user/.config/claude
+      - ~/.local/share/jm/claude/data:/home/user/.local/share/claude
