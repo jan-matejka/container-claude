@@ -16,9 +16,10 @@ Trigger
 Build
 #####
 
-- Use ``podman compose build`` (via ``docker/compose`` on the GitHub
-  runner) against the existing ``compose.yaml`` / ``Containerfile``, the
-  same way the image is built locally per ``README.rst``.
+- Use ``docker/compose`` to build the image.
+  The same way the image is built locally per ``README.rst``.
+  Doesn't matter if CI uses docker or podman. Whatever is simpler.
+
 - No parallel/alternate build path (e.g. ``docker/build-push-action``)
   should be introduced; CI should mirror the local build command.
 
@@ -48,3 +49,10 @@ Status
 ######
 
 Requirements only — the workflow itself has not been implemented yet.
+
+Implementation Spec
+###################
+
+- The image name SHALL be just ``claude``.
+- The image build SHALL also use the registry as a cache that can be leveraged
+  across pipeline instances.
