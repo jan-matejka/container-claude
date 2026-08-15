@@ -23,13 +23,16 @@ Build
 - No parallel/alternate build path (e.g. ``docker/build-push-action``)
   should be introduced; CI should mirror the local build command.
 
+- Supply the correct build args for BUILD_INFO_CTIME and BUILD_INFO_GIT_COMMIT
+
 Tag
 ###
 
-- Tag the resulting image with the ``latest`` tag if built from main branch.
-
 - Always tag the resulting image with the full git commit SHA
   of the commit that triggered the build.
+
+Note you do not need to retag the local image with latest tag as that is the
+default and the pushed image is the same name as in the compose file.
 
 Push
 ####
@@ -56,3 +59,5 @@ Implementation Spec
 - The image name SHALL be just ``claude``.
 - The image build SHALL also use the registry as a cache that can be leveraged
   across pipeline instances.
+- Shell script steps consisting of more than a single simple command SHALL
+  start setting shell options errexit, nounset, and xtrace.
