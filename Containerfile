@@ -1,13 +1,20 @@
-FROM docker.io/library/debian:trixie-slim
-
-WORKDIR /app
-CMD ["claude"]
+FROM docker.io/library/debian:trixie-slim AS build
 
 RUN <<EOF
 apt-get update
 apt-get install -y npm
 npm install -g @anthropic-ai/claude-code
 EOF
+
+RUN mkdir -p /out && cp "$(readlink -f "$(command -v claude)")" /out/claude
+
+
+FROM docker.io/library/debian:trixie-slim
+
+WORKDIR /app
+CMD ["claude"]
+
+COPY --from=build /out/claude /usr/local/bin/claude
 
 RUN useradd -m user
 
