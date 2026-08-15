@@ -14,3 +14,4 @@ services:
     volumes:
       - ~/.config/jm/claude:/home/user/.config/claude
       - ~/.local/share/jm/claude/data:/home/user/.local/share/claude
+      - ./:/app
