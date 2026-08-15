@@ -2,7 +2,7 @@ name: jm
 
 services:
   claude:
-    image: ${IMAGE:-claude}:latest
+    image: ${IMAGE:-claude}:${TAG:-latest}
     build:
       context: ./
       dockerfile: Containerfile
