@@ -2,9 +2,13 @@ name: jm
 
 services:
   claude:
+    image: ${IMAGE:-claude}:latest
     build:
       context: ./
       dockerfile: Containerfile
+      args:
+        BUILD_INFO_CTIME: ${BUILD_INFO_CTIME:-latest}
+        BUILD_INFO_GIT_COMMIT: ${BUILD_INFO_GIT_COMMIT:-latest}
     userns_mode: "keep-id:uid=1000,gid=1000"
     cap_drop:
       - ALL
@@ -14,3 +18,4 @@ services:
     volumes:
       - ~/.config/jm/claude:/home/user/.config/claude
       - ~/.local/share/jm/claude/data:/home/user/.local/share/claude
+      - ./:/app

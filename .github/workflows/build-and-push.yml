@@ -1,0 +1,69 @@
+name: Build and push image
+
+on:
+  push:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: claude
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compute image repository
+        id: repo
+        run: |
+          set -eux
+          owner="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "image=${REGISTRY}/${owner}/${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
+
+      # The default buildx "docker" driver builder can't export a build
+      # cache to a registry; switch to the docker-container driver so
+      # cache_to/cache_from type=registry (set in compose.ci.yaml) works.
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ${{ env.REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute build info
+        id: build_info
+        run: echo "ctime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Build image
+        env:
+          CACHE_IMAGE: ${{ steps.repo.outputs.image }}:buildcache
+          IMAGE: ${{ steps.repo.outputs.image }}
+          BUILD_INFO_CTIME: ${{ steps.build_info.outputs.ctime }}
+          BUILD_INFO_GIT_COMMIT: ${{ github.sha }}
+        run: docker compose -f compose.yaml -f compose.ci.yaml build
+
+      - name: Tag and push image
+        env:
+          IMAGE: ${{ steps.repo.outputs.image }}
+          GIT_SHA: ${{ github.sha }}
+          IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          set -eux
+          docker tag "${IMAGE}:latest" "${IMAGE}:${GIT_SHA}"
+          docker push "${IMAGE}:${GIT_SHA}"
+
+          if [ "${IS_MAIN}" = "true" ]; then
+            docker push "${IMAGE}:latest"
+          fi
