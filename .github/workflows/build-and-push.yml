@@ -25,6 +25,7 @@ jobs:
       - name: Compute image repository
         id: repo
         run: |
+          set -eux
           owner="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
           echo "image=${REGISTRY}/${owner}/${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
 
@@ -41,9 +42,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Compute build info
+        id: build_info
+        run: echo "ctime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - name: Build image
         env:
           CACHE_IMAGE: ${{ steps.repo.outputs.image }}:buildcache
+          IMAGE: ${{ steps.repo.outputs.image }}
+          BUILD_INFO_CTIME: ${{ steps.build_info.outputs.ctime }}
+          BUILD_INFO_GIT_COMMIT: ${{ github.sha }}
         run: docker compose -f compose.yaml -f compose.ci.yaml build
 
       - name: Tag and push image
@@ -52,8 +60,8 @@ jobs:
           GIT_SHA: ${{ github.sha }}
           IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          set -eu
-          docker tag claude:latest "${IMAGE}:${GIT_SHA}"
+          set -eux
+          docker tag "${IMAGE}:latest" "${IMAGE}:${GIT_SHA}"
           docker push "${IMAGE}:${GIT_SHA}"
 
           if [ "${IS_MAIN}" = "true" ]; then
