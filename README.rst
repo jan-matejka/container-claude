@@ -29,4 +29,6 @@ claude configuration and authentication is persistent across containers.
 Run
 ###
 
-`podman compose run claude`
+built locally: `podman compose run claude`
+
+or `IMAGE=ghcr.io/jan-matejka/claude podman compose run claude`
