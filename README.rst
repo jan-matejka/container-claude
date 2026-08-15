@@ -5,7 +5,7 @@ claude container image
 Requirements
 ############
 
-- podman
+- podman (or docker)
 - docker/compose
 
 Build
