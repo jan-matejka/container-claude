@@ -48,7 +48,7 @@ from the same branch.
 Status
 ######
 
-Requirements only — the workflow itself has not been implemented yet.
+Implemented.
 
 Implementation Spec
 ###################

@@ -2,6 +2,7 @@ name: jm
 
 services:
   claude:
+    image: claude:latest
     build:
       context: ./
       dockerfile: Containerfile
