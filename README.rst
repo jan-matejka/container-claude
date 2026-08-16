@@ -71,9 +71,14 @@ Optional environment variables:
 
   - data volume for claude.
 
+- ``CLAUDE_KNOWN_HOSTS``
+
+  - Location of known_hosts for claude's connection to sandbox VM
+  - Defaults to ``~/.config/jm/claude/known_hosts``.
+
 Other setup steps:
 
-- `$ ssh-keyscan <VM_SANDBOX_HOSTNAME> > ./.ssh_known_hosts`
+- `$ ssh-keyscan <VM_SANDBOX_HOSTNAME> > ~/.config/jm/claude/known_hosts`
 
 - Enable podman socket for docker/compose:
   `$ systemctl --user enable --now podman.socket`
