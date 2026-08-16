@@ -5,13 +5,17 @@ Goal
 ####
 
 Add a GitHub Actions pipeline that builds the claude container image on
-every push, tags it with the git commit hash, and pushes it to the ghcr.io
-container registry.
+every push and on a weekly schedule, tags it with the git commit hash, and
+pushes it to the ghcr.io container registry.
 
 Trigger
 #######
 
 - Push to any branch.
+- Also run on a weekly schedule (independent of pushes), so the image stays
+  up to date even during weeks with no commits. GitHub Actions schedules only
+  support fixed calendar times rather than "N days since the last build", so
+  this is approximated with a fixed weekly cron.
 
 Build
 #####
