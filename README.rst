@@ -40,28 +40,35 @@ Local claude container configuration
 Mandatory environment variables:
 
 - ``CLAUDE_REMOTE_PODMAN``
+
   - The URL to the VM's podman socket
     (e.g.: ``ssh://user@machine/.../podman.sock``)
   - This is consumed by podman itself.
+
 - ``CLAUDE_SSH_KEY``
+
   - The path to the private ssh key to pass to claude to authenticate with to
     `CLAUDE_REMOTE_PODMAN`.
 
 Optional environment variables:
 
 - ``CLAUDE_CONTAINER_APP``
+
   - the app workspace for claude. RW mount.
   - Note it is assumed this a worktree.
   - Defaults to ``./``.
 
 - ``CLAUDE_CONTAINER_APP_GIT_DIR``
+
   - the git dir mounted into claude. RO mount.
   - Defaults to ``../main/.git``.
 
 - ``CLAUDE_CONTAINER_CONFIG``
+
   - config volume for claude.
 
 - ``CLAUDE_CONTAINER_DATA``
+
   - data volume for claude.
 
 Other setup steps:
