@@ -30,7 +30,7 @@ Sandbox VM configuration
 - Enable the user's podman.socket and `# loginctl enable-linger <user>`.
 - Create a ssh key for claude and install the pubkey into the host's
   authorized_keys with options
-  ``restrict,permitopen="unix:/run/user/1000/podman/podman.sock",command="/bin/false"``
+  ``restrict,port-forwarding,command="/bin/false"``
   [1]_
   (See ``virt-sysprep``).
 
@@ -85,5 +85,14 @@ built locally: `podman compose run claude`
 
 or `IMAGE=ghcr.io/jan-matejka/claude podman compose run claude`
 
-.. [1] Note this does not add any real security. It just makes it a little more
-       complicated to run arbitrary commands on the host.
+.. [1] Note this does not add any real security. ``restrict`` disables
+       pty/agent/X11-forwarding and ``~/.ssh/rc``, and ``command="/bin/false"``
+       fails any shell/exec attempt, but once forwarding reaches the podman
+       socket the key can start arbitrary containers on the VM (e.g.
+       bind-mounting the VM's own filesystem, running privileged) -- which is
+       equivalent to full control of the VM regardless of these SSH-level
+       restrictions. OpenSSH's ``permitopen`` also has no syntax to scope
+       Unix-domain socket destinations (only ``host:port`` pairs), so
+       forwarding itself can't be narrowed to just this one socket either.
+       The VM's own network isolation is what actually bounds the blast
+       radius, not this key's options.
