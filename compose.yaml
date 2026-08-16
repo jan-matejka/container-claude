@@ -19,3 +19,5 @@ services:
       - ~/.config/jm/claude:/home/user/.config/claude
       - ~/.local/share/jm/claude/data:/home/user/.local/share/claude
       - ./:/app
+      - ../main/.git:/src/main/.git:ro
+      - ./.git.container:/app/.git:ro

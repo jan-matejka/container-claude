@@ -26,6 +26,14 @@ Container configuration
 The `compose.yaml` defines volumes that are mapped into the container so the
 claude configuration and authentication is persistent across containers.
 
+Repository Structure
+####################
+
+It is assumed claude is being run from a git-worktree and the git-dir is in
+``../main/.git``.
+
+Claude gets RW access to the worktree but only RO access to the git-dir.
+
 Run
 ###
 
