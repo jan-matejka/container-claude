@@ -1,4 +1,4 @@
-FROM docker.io/library/debian:trixie-slim AS build
+FROM ghcr.io/jan-matejka/debian:latest AS build
 
 RUN <<EOF
 apt-get update
@@ -9,14 +9,12 @@ EOF
 RUN mkdir -p /out && cp "$(readlink -f "$(command -v claude)")" /out/claude
 
 
-FROM docker.io/library/debian:trixie-slim
+FROM ghcr.io/jan-matejka/debian:latest
 
 WORKDIR /app
 CMD ["claude"]
 
 COPY --from=build /out/claude /usr/local/bin/claude
-
-RUN useradd -m user
 
 USER user
 
