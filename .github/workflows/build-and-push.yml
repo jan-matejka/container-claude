@@ -57,7 +57,7 @@ jobs:
           IMAGE: ${{ steps.repo.outputs.image }}
           BUILD_INFO_CTIME: ${{ steps.build_info.outputs.ctime }}
           BUILD_INFO_GIT_COMMIT: ${{ github.sha }}
-        run: docker compose -f compose.yaml -f compose.ci.yaml build
+        run: docker compose -f compose.yaml -f compose.ci.yaml build --pull
 
       - name: Tag and push image
         env:
