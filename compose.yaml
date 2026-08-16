@@ -15,9 +15,16 @@ services:
     security_opt:
       - no-new-privileges:true
     read_only: true
+    environment:
+      - CONTAINER_HOST=${CLAUDE_REMOTE_PODMAN:-}
+      # CLAUDE_REMOTE_PODMAN: ssh://user@machine/<podman.sock path>
+      - CONTAINER_SSHKEY=/home/user/.ssh/id_ed25519
     volumes:
-      - ~/.config/jm/claude:/home/user/.config/claude
-      - ~/.local/share/jm/claude/data:/home/user/.local/share/claude
-      - ./:/app
-      - ../main/.git:/src/main/.git:ro
+      - ${CLAUDE_CONTAINER_CONFIG:-~/.config/jm/claude}:/home/user/.config/claude
+      - ${CLAUDE_CONTAINER_DATA:-~/.local/share/jm/claude/data}:/home/user/.local/share/claude
+      - ${CLAUDE_CONTAINER_APP:-./}:/app
+      - ${CLAUDE_CONTAINER_APP_GIT_DIR:-../main/.git:/src/main/.git}:ro
       - ./.git.container:/app/.git:ro
+      - ./.ssh_known_hosts:/home/user/.ssh/known_hosts:ro
+      - /etc/hosts:/etc/hosts:ro
+      - ${CLAUDE_SSH_KEY:-/dev/null}:/home/user/.ssh/id_ed25519:ro

@@ -16,6 +16,11 @@ CMD ["claude"]
 
 COPY --from=build /out/claude /usr/local/bin/claude
 
+RUN <<EOF
+apt-get update
+apt-get install -y podman openssh-client
+EOF
+
 USER user
 
 RUN <<EOF

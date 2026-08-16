@@ -2,6 +2,15 @@
 claude container image
 ######################
 
+Features
+########
+
+- Claude running in container with minimal privileges.
+- Persistent claude configuration/authentication.
+- Claude has RW access to git worktree.
+- Claude has RO access to the git repository itself.
+- Claude can run containers in a sandboxed VM.
+
 Requirements
 ############
 
@@ -13,26 +22,54 @@ Build
 
 - `podman compose build`
 
-Host configuration
-##################
+Sandbox VM configuration
+########################
+
+- Install podman, docker-compose.
+- Create a user for claude to run as.
+- Enable the user's podman.socket and `# loginctl enable-linger <user>`.
+- Create a ssh key for claude and install the pubkey into the host's
+  authorized_keys with options
+  ``restrict,permitopen="unix:/run/user/1000/podman/podman.sock",command="/bin/false"``
+  [1]_
+  (See ``virt-sysprep``).
+
+Local claude container configuration
+####################################
+
+Mandatory environment variables:
+
+- ``CLAUDE_REMOTE_PODMAN``
+  - The URL to the VM's podman socket
+    (e.g.: ``ssh://user@machine/.../podman.sock``)
+  - This is consumed by podman itself.
+- ``CLAUDE_SSH_KEY``
+  - The path to the private ssh key to pass to claude to authenticate with to
+    `CLAUDE_REMOTE_PODMAN`.
+
+Optional environment variables:
+
+- ``CLAUDE_CONTAINER_APP``
+  - the app workspace for claude. RW mount.
+  - Note it is assumed this a worktree.
+  - Defaults to ``./``.
+
+- ``CLAUDE_CONTAINER_APP_GIT_DIR``
+  - the git dir mounted into claude. RO mount.
+  - Defaults to ``../main/.git``.
+
+- ``CLAUDE_CONTAINER_CONFIG``
+  - config volume for claude.
+
+- ``CLAUDE_CONTAINER_DATA``
+  - data volume for claude.
+
+Other setup steps:
+
+- `$ ssh-keyscan <VM_SANDBOX_HOSTNAME> > ./.ssh_known_hosts`
 
 - Enable podman socket for docker/compose:
-
-  `systemctl --user enable --now podman.socket`
-
-Container configuration
-#######################
-
-The `compose.yaml` defines volumes that are mapped into the container so the
-claude configuration and authentication is persistent across containers.
-
-Repository Structure
-####################
-
-It is assumed claude is being run from a git-worktree and the git-dir is in
-``../main/.git``.
-
-Claude gets RW access to the worktree but only RO access to the git-dir.
+  `$ systemctl --user enable --now podman.socket`
 
 Run
 ###
@@ -40,3 +77,6 @@ Run
 built locally: `podman compose run claude`
 
 or `IMAGE=ghcr.io/jan-matejka/claude podman compose run claude`
+
+.. [1] Note this does not add any real security. It just makes it a little more
+       complicated to run arbitrary commands on the host.
