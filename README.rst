@@ -83,6 +83,10 @@ Other setup steps:
 - Enable podman socket for docker/compose:
   `$ systemctl --user enable --now podman.socket`
 
+  Note: if you edit e.g. ${XDG_CONFIG_HOME}/containers/containers.conf you have
+  to restart the socket or you want see the change take effect like do with
+  podman-compose.
+
 Run
 ###
 
