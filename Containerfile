@@ -11,7 +11,7 @@ RUN mkdir -p /out && cp "$(readlink -f "$(command -v claude)")" /out/claude
 
 FROM ghcr.io/jan-matejka/debian:latest
 
-WORKDIR /app
+WORKDIR /src
 CMD ["claude"]
 
 COPY --from=build /out/claude /usr/local/bin/claude
