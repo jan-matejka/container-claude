@@ -7,7 +7,7 @@ on:
     # when there's been no push. GitHub Actions schedules only support fixed
     # calendar times, not "N days since the last run".
     - cron: '10 3 * * 1'
-    # every Monday at 0310 (debian base is buitl at 0300)
+    # every Monday at 0310Z (debian base is buitl at 0300Z)
   workflow_dispatch:
     inputs:
       no_cache:
