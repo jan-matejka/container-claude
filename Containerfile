@@ -23,13 +23,23 @@ EOF
 
 USER user
 
+ARG DOCKER_COMPOSE_RELEASE=v5.5.1
+ARG DOCKER_COMPOSE_URL=https://github.com/docker/compose/releases/${DOCKER_COMPOSE_RELEASE}/download/docker-compose-linux-x86_64
+
+ENV DOCKER_COMPOSE_URL=$DOCKER_COMPOSE_URL
+
+RUN <<EOF
+set -eux
+mkdir -p ~/.local/bin
+curl -SL ${DOCKER_COMPOSE_URL} -o ~/.local/bin/docker-compose
+EOF
+
 RUN <<EOF
 set -eu
 mkdir -p ~/.config/claude ~/.local/share/claude
 ln -snf ~/.config/claude/claude.json ~/.claude.json
 ln -snf ~/.local/share/claude ~/.claude
 EOF
-
 
 ARG IMAGE_BUILD_CTIME=
 ARG IMAGE_BUILD_COMMIT=
