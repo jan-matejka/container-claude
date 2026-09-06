@@ -20,7 +20,7 @@ COPY --from=uv /uv /uvx /usr/local/bin/
 
 RUN <<EOF
 apt-get update
-apt-get install -y podman openssh-client cloc
+apt-get install -y podman openssh-client cloc gh
 EOF
 
 USER user
