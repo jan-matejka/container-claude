@@ -1,4 +1,6 @@
-FROM ghcr.io/jan-matejka/debian:latest AS build
+ARG UV_RELEASE=0.12
+FROM ghcr.io/astral-sh/uv:${UV_RELEASE} AS uv
+FROM ghcr.io/jan-matejka/debian:latest AS claude
 
 RUN <<EOF
 apt-get update
@@ -8,13 +10,13 @@ EOF
 
 RUN mkdir -p /out && cp "$(readlink -f "$(command -v claude)")" /out/claude
 
-
 FROM ghcr.io/jan-matejka/debian:latest
 
 WORKDIR /src
 CMD ["claude"]
 
-COPY --from=build /out/claude /usr/local/bin/claude
+COPY --from=claude /out/claude /usr/local/bin/claude
+COPY --from=uv /uv /uvx /usr/local/bin/
 
 RUN <<EOF
 apt-get update
@@ -33,6 +35,8 @@ set -eux
 mkdir -p ~/.local/bin
 curl -SL ${DOCKER_COMPOSE_URL} -o ~/.local/bin/docker-compose
 EOF
+
+RUN uv python install 3.14
 
 RUN <<EOF
 set -eu
