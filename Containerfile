@@ -47,6 +47,11 @@ ln -snf ~/.config/claude/claude.json ~/.claude.json
 ln -snf ~/.local/share/claude ~/.claude
 EOF
 
+RUN curl https://raw.githubusercontent.com/jan-matejka/dotfiles-git/refs/heads/master/.gitconfig >~/.gitconfig
+USER root
+RUN apt-get install -y python3 ruby puppet
+USER user
+
 ARG IMAGE_BUILD_CTIME=
 ARG IMAGE_BUILD_COMMIT=
 ARG IMAGE_BUILD_REF=
