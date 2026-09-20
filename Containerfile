@@ -21,7 +21,7 @@ COPY --from=uv /uv /uvx /usr/local/bin/
 RUN <<EOF
 set -eux
 apt-get update
-apt-get install -y cloc gh podman python3-docutils openssh-client
+apt-get install -y cloc gh podman python3-docutils openssh-client git-lfs
 dpkg -S /usr/bin/rst2man
 EOF
 
