@@ -2,11 +2,10 @@ ARG UV_RELEASE=0.12
 FROM ghcr.io/astral-sh/uv:${UV_RELEASE} AS uv
 FROM ghcr.io/jan-matejka/debian:latest AS claude
 
-RUN <<EOF
-apt-get update
-apt-get install -y npm
+RUN set -eux; \
+apt-get update; \
+apt-get install -y npm; \
 npm install -g @anthropic-ai/claude-code
-EOF
 
 RUN mkdir -p /out && cp "$(readlink -f "$(command -v claude)")" /out/claude
 
@@ -18,12 +17,9 @@ CMD ["claude"]
 COPY --from=claude /out/claude /usr/local/bin/claude
 COPY --from=uv /uv /uvx /usr/local/bin/
 
-RUN <<EOF
-set -eux
-apt-get update
+RUN set -eux; \
+apt-get update; \
 apt-get install -y cloc gh podman python3-docutils openssh-client git-lfs
-dpkg -S /usr/bin/rst2man
-EOF
 
 USER user
 
@@ -32,20 +28,16 @@ ARG DOCKER_COMPOSE_URL=https://github.com/docker/compose/releases/${DOCKER_COMPO
 
 ENV DOCKER_COMPOSE_URL=$DOCKER_COMPOSE_URL
 
-RUN <<EOF
-set -eux
-mkdir -p ~/.local/bin
+RUN set -eux; \
+mkdir -p ~/.local/bin; \
 curl -SL ${DOCKER_COMPOSE_URL} -o ~/.local/bin/docker-compose
-EOF
 
 RUN uv python install 3.14
 
-RUN <<EOF
-set -eu
-mkdir -p ~/.config/claude ~/.local/share/claude
-ln -snf ~/.config/claude/claude.json ~/.claude.json
+RUN set -eu; \
+mkdir -p ~/.config/claude ~/.local/share/claude; \
+ln -snf ~/.config/claude/claude.json ~/.claude.json; \
 ln -snf ~/.local/share/claude ~/.claude
-EOF
 
 RUN curl https://raw.githubusercontent.com/jan-matejka/dotfiles-git/refs/heads/master/.gitconfig >~/.gitconfig
 USER root
