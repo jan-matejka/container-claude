@@ -30,7 +30,7 @@ ENV DOCKER_COMPOSE_URL=$DOCKER_COMPOSE_URL
 
 RUN set -eux; \
 mkdir -p ~/.local/bin; \
-curl -SL ${DOCKER_COMPOSE_URL} -o ~/.local/bin/docker-compose; \
+curl -fsSL ${DOCKER_COMPOSE_URL} -o ~/.local/bin/docker-compose; \
 chmod +x ~/.local/bin/docker-compose
 
 RUN uv python install 3.14
