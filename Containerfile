@@ -24,7 +24,7 @@ apt-get install -y cloc gh podman python3-docutils openssh-client git-lfs
 USER user
 
 ARG DOCKER_COMPOSE_RELEASE=v5.5.1
-ARG DOCKER_COMPOSE_URL=https://github.com/docker/compose/releases/${DOCKER_COMPOSE_RELEASE}/download/docker-compose-linux-x86_64
+ARG DOCKER_COMPOSE_URL=https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_RELEASE}/docker-compose-linux-x86_64
 
 ENV DOCKER_COMPOSE_URL=$DOCKER_COMPOSE_URL
 
